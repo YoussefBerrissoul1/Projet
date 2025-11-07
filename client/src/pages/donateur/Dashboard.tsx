@@ -36,9 +36,9 @@ export default function DonateurDashboard() {
     : 0;
 
   const projectsByStatus = [
-    { name: 'Active', value: fundedProjects.filter((p) => p.status === 'active').length },
-    { name: 'Completed', value: fundedProjects.filter((p) => p.status === 'completed').length },
-    { name: 'Planning', value: fundedProjects.filter((p) => p.status === 'planning').length },
+    { name: 'En Cours', value: fundedProjects.filter((p) => p.status === 'enCours').length },
+    { name: 'Terminé', value: fundedProjects.filter((p) => p.status === 'completed').length },
+    { name: 'Planification', value: fundedProjects.filter((p) => p.status === 'planning').length },
   ];
 
   const COLORS = ['#8B5CF6', '#10B981', '#06B6D4'];
@@ -50,24 +50,24 @@ export default function DonateurDashboard() {
   }));
 
   const stats = [
-    {
-      label: 'Funded Projects',
-      value: fundedProjects.length,
-      icon: Briefcase,
-      color: 'from-purple-500 to-purple-600',
-    },
-    {
-      label: 'Total Invested',
-      value: `$${totalBudget}`,
-      icon: Heart,
-      color: 'from-red-500 to-red-600',
-    },
-    {
-      label: 'Avg Progress',
-      value: `${avgProgress}%`,
-      icon: TrendingUp,
-      color: 'from-emerald-500 to-emerald-600',
-    },
+	    {
+	      label: 'Projets Financés',
+	      value: fundedProjects.length,
+	      icon: Briefcase,
+	      color: 'from-purple-500 to-purple-600',
+	    },
+	    {
+	      label: 'Total Investi',
+	      value: `${totalBudget.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}`,
+	      icon: Heart,
+	      color: 'from-red-500 to-red-600',
+	    },
+	    {
+	      label: 'Progression Moyenne',
+	      value: `${avgProgress}%`,
+	      icon: TrendingUp,
+	      color: 'from-emerald-500 to-emerald-600',
+	    },
   ];
 
   const containerVariants = {
@@ -119,8 +119,8 @@ export default function DonateurDashboard() {
           variants={itemVariants}
         >
           {/* Projects by Status */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Projects by Status</h3>
+	          <Card className="p-6">
+	            <h3 className="text-lg font-semibold mb-4">Projets par Statut</h3>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -143,8 +143,8 @@ export default function DonateurDashboard() {
           </Card>
 
           {/* Budget Overview */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Budget vs Spent</h3>
+	          <Card className="p-6">
+	            <h3 className="text-lg font-semibold mb-4">Budget vs Dépensé</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={budgetData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -159,25 +159,25 @@ export default function DonateurDashboard() {
         </motion.div>
 
         {/* Impact Summary */}
-        <motion.div variants={itemVariants}>
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Impact Summary</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 bg-muted rounded-lg">
-                <p className="text-sm text-muted-foreground mb-2">Total Budget Allocated</p>
-                <p className="text-2xl font-bold">${totalBudget}</p>
-              </div>
-              <div className="p-4 bg-muted rounded-lg">
-                <p className="text-sm text-muted-foreground mb-2">Total Spent</p>
-                <p className="text-2xl font-bold text-purple-600">${totalSpent}</p>
-              </div>
-              <div className="p-4 bg-muted rounded-lg">
-                <p className="text-sm text-muted-foreground mb-2">Remaining Budget</p>
-                <p className="text-2xl font-bold text-emerald-600">${totalBudget - totalSpent}</p>
-              </div>
-            </div>
-          </Card>
-        </motion.div>
+	        <motion.div variants={itemVariants}>
+	          <Card className="p-6">
+	            <h3 className="text-lg font-semibold mb-4">Aperçu de l'Impact Global</h3>
+	            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+	              <div className="p-4 bg-muted rounded-lg">
+	                <p className="text-sm text-muted-foreground mb-2">Budget Total Alloué</p>
+	                <p className="text-2xl font-bold">{totalBudget.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}</p>
+	              </div>
+	              <div className="p-4 bg-muted rounded-lg">
+	                <p className="text-sm text-muted-foreground mb-2">Total Dépensé</p>
+	                <p className="text-2xl font-bold text-purple-600">{totalSpent.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}</p>
+	              </div>
+	              <div className="p-4 bg-muted rounded-lg">
+	                <p className="text-sm text-muted-foreground mb-2">Budget Restant</p>
+	                <p className="text-2xl font-bold text-emerald-600">{(totalBudget - totalSpent).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}</p>
+	              </div>
+	            </div>
+	          </Card>
+	        </motion.div>
       </motion.div>
     </DashboardLayout>
   );

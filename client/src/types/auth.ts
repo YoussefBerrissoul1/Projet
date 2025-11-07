@@ -3,6 +3,8 @@ export type UserRole = 'admin' | 'chef_projet' | 'donateur';
 export interface User {
   id: string;
   email: string;
+  firstName: string;
+  lastName: string;
   name: string;
   role: UserRole;
   avatar?: string;

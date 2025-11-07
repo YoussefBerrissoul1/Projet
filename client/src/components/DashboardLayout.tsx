@@ -15,6 +15,7 @@ import {
   Sun,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { ThemeToggle } from './ThemeToggle';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -28,7 +29,7 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
   const [inactivityTimer, setInactivityTimer] = useState<NodeJS.Timeout | null>(
     null
   );
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
 
   // Auto-logout after 30 minutes of inactivity
   useEffect(() => {
@@ -149,18 +150,10 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
 
         {/* Footer */}
         <div className="p-4 border-t border-border space-y-2">
-          <button
-            onClick={toggleTheme}
-            className="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-muted transition-colors"
-            title="Toggle theme"
-          >
-            {theme === 'dark' ? (
-              <Sun className="w-5 h-5" />
-            ) : (
-              <Moon className="w-5 h-5" />
-            )}
-            {sidebarOpen && <span className="text-sm">Theme</span>}
-          </button>
+	          <div className="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-muted transition-colors">
+	            <ThemeToggle />
+	            {sidebarOpen && <span className="text-sm">Theme</span>}
+	          </div>
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-destructive/10 text-destructive hover:text-destructive transition-colors"

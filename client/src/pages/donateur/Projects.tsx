@@ -6,15 +6,24 @@ import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
 import { useAppStore } from '@/store/appStore';
 import { useAuthStore } from '@/store/authStore';
-import { Search, Eye, Download, Calendar, DollarSign } from 'lucide-react';
 import { useLocation } from 'wouter';
+import { Search, Eye, Download, Calendar, DollarSign } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function DonateurProjects() {
   const { user } = useAuthStore();
-  const { projects, indicators } = useAppStore();
-  const [, navigate] = useLocation();
+  const { projects, indicators, showToast } = useAppStore();
   const [searchTerm, setSearchTerm] = useState('');
+  const [, navigate] = useLocation();
+
+  const handlePdfExport = (projectName: string) => {
+    // Simulation of PDF export
+    showToast({
+      title: "Export PDF",
+      description: `Le rapport pour le projet "${projectName}" a été exporté avec succès (simulation).`,
+      variant: "success",
+    });
+  };
 
   const fundedProjects = projects.filter((p) => p.donatorIds.includes(user?.id || ''));
   const filteredProjects = fundedProjects.filter(
@@ -24,7 +33,7 @@ export default function DonateurProjects() {
   );
 
   return (
-    <DashboardLayout title="Funded Projects">
+    <DashboardLayout title="Projets Financés">
       <motion.div
         className="space-y-6"
         initial={{ opacity: 0 }}
@@ -34,9 +43,9 @@ export default function DonateurProjects() {
         {/* Search */}
         <div className="flex-1 max-w-md">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Search projects..."
+              placeholder="Rechercher des projets..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -66,10 +75,10 @@ export default function DonateurProjects() {
                   <div className="flex items-start justify-between mb-4">
                     <h3 className="font-semibold line-clamp-2">{project.name}</h3>
                     <span className={`px-2 py-1 rounded-full text-xs font-semibold capitalize ${
-                      project.status === 'active'
-                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
-                        : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
-                    }`}>
+		                      project.status === 'enCours'
+		                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
+		                        : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200'
+	                    }`}>
                       {project.status}
                     </span>
                   </div>
@@ -79,11 +88,11 @@ export default function DonateurProjects() {
                   {/* Budget */}
                   <div className="mb-4 p-3 bg-muted rounded-lg">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs text-muted-foreground flex items-center gap-1">
-                        <DollarSign className="w-3 h-3" />
-                        Investment
-                      </span>
-                      <span className="text-sm font-semibold">${project.budget}</span>
+		                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+		                        <DollarSign className="w-3 h-3" />
+		                        Investissement
+		                      </span>
+	                      <span className="text-sm font-semibold">{project.budget.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}</span>
                     </div>
                     <div className="w-full bg-border rounded-full h-2">
                       <div
@@ -91,15 +100,15 @@ export default function DonateurProjects() {
                         style={{ width: `${(project.spent / project.budget) * 100}%` }}
                       />
                     </div>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      ${project.spent} spent ({Math.round((project.spent / project.budget) * 100)}%)
-                    </p>
+		                    <p className="text-xs text-muted-foreground mt-2">
+		                      {project.spent.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })} dépensé ({Math.round((project.spent / project.budget) * 100)}%)
+		                    </p>
                   </div>
 
                   {/* Progress */}
                   <div className="mb-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs text-muted-foreground">Overall Progress</span>
+		                      <span className="text-xs text-muted-foreground">Progression Globale</span>
                       <span className="text-sm font-semibold text-emerald-600">{avgProgress}%</span>
                     </div>
                     <div className="w-full bg-border rounded-full h-2">
@@ -118,13 +127,13 @@ export default function DonateurProjects() {
 
                   {/* Actions */}
                   <div className="flex gap-2 mt-auto">
-	                    <Button variant="outline" className="flex-1 gap-1" size="sm" onClick={() => navigate(`/donateur/projects/${project.id}`)}>
-	                      <Eye className="w-4 h-4" />
-	                      View
-	                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <Download className="w-4 h-4" />
-                    </Button>
+		                    <Button variant="outline" className="flex-1 gap-1" size="sm" onClick={() => navigate(`/donateur/projects/${project.id}`)}>
+		                      <Eye className="w-4 h-4" />
+		                      Voir Détails
+		                    </Button>
+		                    <Button variant="ghost" size="sm" onClick={() => handlePdfExport(project.name)}>
+		                      <Download className="w-4 h-4" />
+		                    </Button>
                   </div>
                 </Card>
               </motion.div>

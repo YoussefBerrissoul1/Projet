@@ -119,6 +119,8 @@ export const useAuthStore = create<AuthStoreState>()(
           const mockNewUser: User = {
             id: `new-${Date.now()}`,
             email: newUser.email,
+            firstName: newUser.firstName,
+            lastName: newUser.lastName,
             name: `${newUser.firstName} ${newUser.lastName}`,
             role: 'donateur', // Default role for new signups
             avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${newUser.firstName}`,

@@ -44,7 +44,7 @@ const IndicatorChart = ({ indicator }: IndicatorChartProps) => {
     <Card className="p-4">
       <h4 className="font-semibold mb-2">{indicator.name}</h4>
       <p className="text-sm text-muted-foreground mb-4">
-        Target: {indicator.targetValue} {indicator.unit}
+        Cible: {indicator.targetValue} {indicator.unit}
       </p>
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={chartData}>
@@ -66,8 +66,8 @@ export default function DonateurProjectDetails() {
 
   if (!match || !params?.id) {
     return (
-      <DashboardLayout title="Project Details">
-        <div className="text-center py-10">Project not found.</div>
+      <DashboardLayout title="Détails du Projet">
+        <div className="text-center py-10">Projet introuvable.</div>
       </DashboardLayout>
     );
   }
@@ -77,8 +77,8 @@ export default function DonateurProjectDetails() {
 
   if (!project) {
     return (
-      <DashboardLayout title="Project Details">
-        <div className="text-center py-10">Project not found.</div>
+      <DashboardLayout title="Détails du Projet">
+        <div className="text-center py-10">Projet introuvable.</div>
       </DashboardLayout>
     );
   }
@@ -93,15 +93,15 @@ export default function DonateurProjectDetails() {
     : 0;
 
   const handlePdfExport = () => {
-    toast.info('PDF Export Simulation: Generating report...');
+    toast.info('Simulation d\'Export PDF: Génération du rapport...');
     // Simulate PDF generation delay
     setTimeout(() => {
-      toast.success('PDF Report for project downloaded successfully!');
+      toast.success('Rapport PDF pour le projet téléchargé avec succès !');
     }, 1500);
   };
 
   return (
-    <DashboardLayout title={`Project: ${project.name}`}>
+    <DashboardLayout title={`Projet: ${project.name}`}>
       <motion.div
         className="space-y-6"
         initial={{ opacity: 0 }}
@@ -115,11 +115,11 @@ export default function DonateurProjectDetails() {
             className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Projects
+            Retour aux Projets
           </Button>
           <Button onClick={handlePdfExport} className="gap-2">
             <Download className="w-4 h-4" />
-            Export PDF Report (Simulation)
+            Exporter Rapport PDF (Simulation)
           </Button>
         </div>
 
@@ -140,27 +140,27 @@ export default function DonateurProjectDetails() {
               <DollarSign className="w-5 h-5 text-purple-500" />
               <div>
                 <p className="text-sm text-muted-foreground">Budget</p>
-                <p className="font-semibold">${project.budget}</p>
+                <p className="font-semibold">{project.budget.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-purple-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Spent</p>
-                <p className="font-semibold">${project.spent}</p>
+                <p className="text-sm text-muted-foreground">Dépensé</p>
+                <p className="font-semibold">{project.spent.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-purple-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Avg Progress</p>
+                <p className="text-sm text-muted-foreground">Progression Moyenne</p>
                 <p className="font-semibold text-emerald-600">{avgProgress}%</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-purple-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Duration</p>
+                <p className="text-sm text-muted-foreground">Durée</p>
                 <p className="font-semibold">
                   {format(project.startDate, 'MMM dd, yyyy')} -{' '}
                   {format(project.endDate, 'MMM dd, yyyy')}
@@ -171,7 +171,7 @@ export default function DonateurProjectDetails() {
         </Card>
 
         {/* Indicators Section */}
-        <h3 className="text-xl font-semibold">Key Indicators ({indicators.length})</h3>
+        <h3 className="text-xl font-semibold">Indicateurs Clés ({indicators.length})</h3>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {indicators.map((indicator) => (
             <Card key={indicator.id} className="p-6">
@@ -190,13 +190,13 @@ export default function DonateurProjectDetails() {
 
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between text-sm">
-                  <span>Current Value:</span>
+                  <span>Valeur Actuelle:</span>
                   <span className="font-medium">
                     {indicator.currentValue} {indicator.unit}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span>Target Value:</span>
+                  <span>Valeur Cible:</span>
                   <span className="font-medium">
                     {indicator.targetValue} {indicator.unit}
                   </span>
@@ -219,7 +219,7 @@ export default function DonateurProjectDetails() {
         </div>
 
         {/* Indicator History Charts */}
-        <h3 className="text-xl font-semibold pt-4">Indicator Progression Charts</h3>
+        <h3 className="text-xl font-semibold pt-4">Historique des Indicateurs</h3>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {indicators.map((indicator) => (
             <IndicatorChart key={indicator.id} indicator={indicator} />

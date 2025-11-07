@@ -19,6 +19,7 @@ import ChefDashboard from "./pages/chef/Dashboard";
 import ChefProjects from "./pages/chef/Projects";
 import ChefProjectDetails from "./pages/chef/ProjectDetails";
 import ChefIndicators from "./pages/chef/Indicators";
+import ChefProjectDetails from "./pages/chef/ProjectDetails";
 import DonateurDashboard from "./pages/donateur/Dashboard";
 import DonateurProjects from "./pages/donateur/Projects";
 import DonateurProjectDetails from "./pages/donateur/ProjectDetails";
@@ -68,6 +69,11 @@ function Router() {
       <Route path="/chef/indicators">
         <ProtectedRoute requiredRole="chef_projet">
           <ChefIndicators />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/chef/projects/:id">
+        <ProtectedRoute requiredRole="chef_projet">
+          <ChefProjectDetails />
         </ProtectedRoute>
       </Route>
 

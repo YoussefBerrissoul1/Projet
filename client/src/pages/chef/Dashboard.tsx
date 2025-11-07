@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useAppStore } from '@/store/appStore';
 import { useAuthStore } from '@/store/authStore';
 import { TrendingUp, Briefcase, BarChart3, Calendar } from 'lucide-react';
+import { IndicatorEntryForm } from '@/components/IndicatorEntryForm';
 import {
   LineChart,
   Line,
@@ -114,7 +115,15 @@ export default function ChefDashboard() {
           </Card>
         </motion.div>
 
-        {/* Recent Projects */}
+	        {/* Indicator Entry Form */}
+	        <motion.div variants={itemVariants}>
+	          <Card className="p-6">
+	            <h3 className="text-lg font-semibold mb-4">Enregistrer une Nouvelle Entrée d'Indicateur</h3>
+	            <IndicatorEntryForm onEntryAdded={() => {}} indicators={myIndicators} />
+	          </Card>
+	        </motion.div>
+	
+	        {/* Recent Projects */}
         <motion.div variants={itemVariants}>
           <Card className="p-6">
             <h3 className="text-lg font-semibold mb-4">My Projects</h3>

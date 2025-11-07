@@ -12,6 +12,7 @@ import {
   FileText,
   History,
   ArrowLeft,
+  Clock,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useRoute, useLocation } from 'wouter';
@@ -47,7 +48,7 @@ const IndicatorChart = ({ indicator }: IndicatorChartProps) => {
     <Card className="p-4">
       <h4 className="font-semibold mb-2">{indicator.name}</h4>
       <p className="text-sm text-muted-foreground mb-4">
-        Target: {indicator.targetValue} {indicator.unit}
+        Cible: {indicator.targetValue} {indicator.unit}
       </p>
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={chartData}>
@@ -65,7 +66,7 @@ const IndicatorChart = ({ indicator }: IndicatorChartProps) => {
 export default function ChefProjectDetails() {
   const [match, params] = useRoute('/chef/projects/:id');
   const [, navigate] = useLocation();
-  const { getProjectById, getIndicatorsByProject } = useAppStore();
+  const { getProjectById, getIndicatorsByProject, mockIndicatorEntries } = useAppStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedIndicator, setSelectedIndicator] = useState<Indicator | null>(
     null
@@ -73,8 +74,8 @@ export default function ChefProjectDetails() {
 
   if (!match || !params?.id) {
     return (
-      <DashboardLayout title="Project Details">
-        <div className="text-center py-10">Project not found.</div>
+      <DashboardLayout title="Détails du Projet">
+        <div className="text-center py-10">Projet introuvable.</div>
       </DashboardLayout>
     );
   }
@@ -84,8 +85,8 @@ export default function ChefProjectDetails() {
 
   if (!project) {
     return (
-      <DashboardLayout title="Project Details">
-        <div className="text-center py-10">Project not found.</div>
+      <DashboardLayout title="Détails du Projet">
+        <div className="text-center py-10">Projet introuvable.</div>
       </DashboardLayout>
     );
   }
@@ -104,17 +105,32 @@ export default function ChefProjectDetails() {
       )
     : 0;
 
+  const getStatusColor = (status: string) => {
+    const colors: Record<string, string> = {
+      enCours: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200',
+      planning: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200',
+      completed: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200',
+      paused: 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200',
+    };
+    return colors[status] || '';
+  };
+
+  const timelineData = mockIndicatorEntries
+    .filter(entry => indicators.some(ind => ind.id === entry.indicatorId))
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, 5); // Show last 5 updates
+
   return (
-    <DashboardLayout title={`Project: ${project.name}`}>
+    <DashboardLayout title={`Projet: ${project.name}`}>
       <motion.div
         className="space-y-6"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <Button variant="outline" onClick={() => navigate('/chef/projects')} className="gap-2">
+        <Button variant="outline" onClick={() => navigate('/chef/dashboard')} className="gap-2">
           <ArrowLeft className="w-4 h-4" />
-          Back to Projects
+          Retour au Tableau de Bord
         </Button>
 
         {/* Project Info */}
@@ -122,32 +138,39 @@ export default function ChefProjectDetails() {
           <div className="flex items-start justify-between mb-4">
             <h2 className="text-2xl font-bold">{project.name}</h2>
             <span
-              className={`px-3 py-1 rounded-full text-sm font-semibold capitalize bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200`}
+              className={`px-3 py-1 rounded-full text-sm font-semibold capitalize ${getStatusColor(project.status)}`}
             >
               {project.status}
             </span>
           </div>
           <p className="text-muted-foreground mb-6">{project.description}</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="flex items-center gap-2">
-              <DollarSign className="w-5 h-5 text-purple-500" />
+              <Briefcase className="w-5 h-5 text-purple-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Budget</p>
-                <p className="font-semibold">${project.budget}</p>
+                <p className="text-sm text-muted-foreground">Chef de Projet</p>
+                <p className="font-semibold">{project.chefDeProjetId}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-purple-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Spent</p>
-                <p className="font-semibold">${project.spent}</p>
+                <p className="text-sm text-muted-foreground">Budget</p>
+                <p className="font-semibold">{project.budget.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <DollarSign className="w-5 h-5 text-purple-500" />
+              <div>
+                <p className="text-sm text-muted-foreground">Dépensé</p>
+                <p className="font-semibold">{project.spent.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-purple-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Duration</p>
+                <p className="text-sm text-muted-foreground">Durée</p>
                 <p className="font-semibold">
                   {format(project.startDate, 'MMM dd, yyyy')} -{' '}
                   {format(project.endDate, 'MMM dd, yyyy')}
@@ -158,7 +181,7 @@ export default function ChefProjectDetails() {
         </Card>
 
         {/* Indicators Section */}
-        <h3 className="text-xl font-semibold">Key Indicators ({indicators.length})</h3>
+        <h3 className="text-xl font-semibold">Indicateurs Clés ({indicators.length})</h3>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {indicators.map((indicator) => (
             <Card key={indicator.id} className="p-6">
@@ -177,13 +200,13 @@ export default function ChefProjectDetails() {
 
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between text-sm">
-                  <span>Current Value:</span>
+                  <span>Valeur Actuelle:</span>
                   <span className="font-medium">
                     {indicator.currentValue} {indicator.unit}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span>Target Value:</span>
+                  <span>Valeur Cible:</span>
                   <span className="font-medium">
                     {indicator.targetValue} {indicator.unit}
                   </span>
@@ -202,17 +225,19 @@ export default function ChefProjectDetails() {
                 />
               </div>
 
-              <div className="flex gap-2 mt-4">
+              <div className="flex gap-2">
                 <Button
                   variant="outline"
-                  className="flex-1 gap-2"
+                  size="sm"
+                  className="flex-1 gap-1"
                   onClick={() => handleUpdateValue(indicator)}
                 >
                   <TrendingUp className="w-4 h-4" />
-                  Update Value
+                  Mettre à jour la valeur
                 </Button>
-                <Button variant="ghost" size="icon" title="View History">
-                  <History className="w-4 h-4" />
+                <Button variant="outline" size="sm" className="flex-1 gap-1">
+                  <FileText className="w-4 h-4" />
+                  Simuler Preuve
                 </Button>
               </div>
             </Card>
@@ -220,33 +245,56 @@ export default function ChefProjectDetails() {
         </div>
 
         {/* Indicator History Charts */}
-        <h3 className="text-xl font-semibold pt-4">Indicator History</h3>
+        <h3 className="text-xl font-semibold pt-4">Historique des Indicateurs</h3>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {indicators.map((indicator) => (
             <IndicatorChart key={indicator.id} indicator={indicator} />
           ))}
         </div>
 
-        {/* File Upload Simulation */}
+        {/* Timeline of Recent Updates */}
+        <h3 className="text-xl font-semibold pt-4">Chronologie des Mises à Jour Récentes</h3>
         <Card className="p-6">
-          <h3 className="text-xl font-semibold mb-4">Evidence File Upload (Simulation)</h3>
-          <p className="text-muted-foreground mb-4">
-            This section simulates the upload of evidence files related to the project's progress.
-          </p>
-          <Button className="gap-2">
-            <FileText className="w-4 h-4" />
-            Upload Evidence File
-          </Button>
+          <div className="space-y-4">
+            {timelineData.length > 0 ? (
+              timelineData.map((entry, index) => (
+                <div key={index} className="flex items-start gap-4">
+                  <div className="flex flex-col items-center">
+                    <div className="w-3 h-3 rounded-full bg-primary mt-1" />
+                    {index < timelineData.length - 1 && (
+                      <div className="w-px h-full bg-border" />
+                    )}
+                  </div>
+                  <div>
+                    <p className="font-medium">
+                      Mise à jour de l'indicateur{' '}
+                      <span className="text-primary">
+                        {indicators.find(i => i.id === entry.indicatorId)?.name}
+                      </span>
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Nouvelle valeur: {entry.value}{' '}
+                      {indicators.find(i => i.id === entry.indicatorId)?.unit}
+                    </p>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                      <Clock className="w-3 h-3" />
+                      {format(entry.createdAt, 'MMM dd, yyyy HH:mm')}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-muted-foreground">Aucune mise à jour récente.</p>
+            )}
+          </div>
         </Card>
       </motion.div>
 
-      {selectedIndicator && (
-        <IndicatorEntryFormModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          indicator={selectedIndicator}
-        />
-      )}
+      <IndicatorEntryFormModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        indicator={selectedIndicator}
+      />
     </DashboardLayout>
   );
 }

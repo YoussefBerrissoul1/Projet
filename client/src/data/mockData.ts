@@ -5,6 +5,8 @@ export const mockUsers: AuthUser[] = [
   {
     id: '1',
     email: 'admin@impacttracker.com',
+    firstName: 'Alice',
+    lastName: 'Johnson',
     name: 'Alice Johnson',
     role: 'admin',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alice',
@@ -13,6 +15,8 @@ export const mockUsers: AuthUser[] = [
   {
     id: '2',
     email: 'chef@impacttracker.com',
+    firstName: 'Bob',
+    lastName: 'Smith',
     name: 'Bob Smith',
     role: 'chef_projet',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bob',
@@ -21,6 +25,8 @@ export const mockUsers: AuthUser[] = [
   {
     id: '3',
     email: 'donateur@impacttracker.com',
+    firstName: 'Carol',
+    lastName: 'White',
     name: 'Carol White',
     role: 'donateur',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Carol',
@@ -29,6 +35,8 @@ export const mockUsers: AuthUser[] = [
   {
     id: '4',
     email: 'chef2@impacttracker.com',
+    firstName: 'David',
+    lastName: 'Brown',
     name: 'David Brown',
     role: 'chef_projet',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
@@ -37,6 +45,8 @@ export const mockUsers: AuthUser[] = [
   {
     id: '5',
     email: 'donateur2@impacttracker.com',
+    firstName: 'Emma',
+    lastName: 'Davis',
     name: 'Emma Davis',
     role: 'donateur',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma',
@@ -50,7 +60,7 @@ export const mockProjects: Project[] = [
     name: 'Education Initiative - Rural Schools',
     description:
       'Providing quality education to 500 children in rural areas through school infrastructure and teacher training.',
-    status: 'active',
+    status: 'enCours',
     startDate: new Date('2024-01-01'),
     endDate: new Date('2024-12-31'),
     budget: 50000,
@@ -66,7 +76,7 @@ export const mockProjects: Project[] = [
     name: 'Clean Water Project',
     description:
       'Building 20 water wells in villages to provide clean drinking water to 5000 people.',
-    status: 'active',
+    status: 'enCours',
     startDate: new Date('2024-02-01'),
     endDate: new Date('2025-01-31'),
     budget: 75000,

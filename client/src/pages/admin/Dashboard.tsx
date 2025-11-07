@@ -62,7 +62,7 @@ export default function AdminDashboard() {
   ];
 
   const projectsByStatus = [
-    { name: 'Active', value: projects.filter((p) => p.status === 'active').length },
+    { name: 'En Cours', value: projects.filter((p) => p.status === 'enCours').length },
     { name: 'Planning', value: projects.filter((p) => p.status === 'planning').length },
     { name: 'Completed', value: projects.filter((p) => p.status === 'completed').length },
     { name: 'Paused', value: projects.filter((p) => p.status === 'paused').length },
